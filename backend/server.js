@@ -1,32 +1,40 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import bodyParser from "body-parser";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import vaultRoutes from "./routes/vaultRoutes.js";
 import landingRoute from "./routes/landingRoute.js";
 
+// Load environment variables
 dotenv.config();
+
+// Connect to MongoDB
 connectDB();
 
-
 const app = express();
-app.use(cors({
-  origin: ['http://localhost:5173','https://passwordgenerato2.netlify.app/'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
-app.use(bodyParser.json({ limit: "2mb" }));
+// ✅ CORS Configuration
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",              // Local frontend (development)
+      "https://passwordgenerato2.netlify.app" // Deployed frontend (production)
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-app.use("/api/",landingRoute);
+// ✅ Middleware
+app.use(express.json({ limit: "2mb" }));
+
+// ✅ Routes
+app.use("/api", landingRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/vault", vaultRoutes);
 
+// ✅ Server Start
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
