@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173, // or 3000, doesn’t matter much
+    port: 5000, // or 3000, doesn’t matter much
     proxy: {
       '/api': {
         target: 'https://password-generator-z5e8.onrender.com/', // Local backend (development only)

@@ -17,10 +17,7 @@ const app = express();
 // ✅ CORS Configuration
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",              // Local frontend (development)
-      "https://passwordgenerato2.netlify.app" // Deployed frontend (production)
-    ],
+    origin: "https://passwordgenerato2.netlify.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
