@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from "@/config";
 import axios from 'axios';
 import "./Vault.css"
 
@@ -31,10 +32,10 @@ const Vault = () => {
 
   // Create axios instance with auth header
   const api = axios.create({
-    baseURL: '/api',
+    baseURL: API_BASE_URL, // Use full backend URL
     headers: {
-      'Content-Type': 'application/json'
-    }
+      "Content-Type": "application/json",
+    },
   });
 
   // Add request interceptor to include auth token
@@ -98,26 +99,26 @@ const Vault = () => {
     const numbers = '0123456789';
     const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
     const lookAlikes = '0OIl1';
-    
+
     let charset = lowercase + uppercase;
-    
+
     if (includeNumbers) {
       charset += numbers;
     }
     if (includeSymbols) {
       charset += symbols;
     }
-    
+
     if (excludeLookAlikes) {
       charset = charset.split('').filter(char => !lookAlikes.includes(char)).join('');
     }
-    
+
     let password = '';
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * charset.length);
       password += charset[randomIndex];
     }
-    
+
     // Ensure password has at least one lowercase and one uppercase
     if (!password.match(/[a-z]/)) {
       const randomLower = lowercase[Math.floor(Math.random() * lowercase.length)];
@@ -127,7 +128,7 @@ const Vault = () => {
       const randomUpper = uppercase[Math.floor(Math.random() * uppercase.length)];
       password = password.slice(0, -1) + randomUpper;
     }
-    
+
     return password;
   };
 
@@ -166,7 +167,7 @@ const Vault = () => {
   };
 
   // Filter items based on search query
-  const filteredItems = vaultItems.filter(item => 
+  const filteredItems = vaultItems.filter(item =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.url.toLowerCase().includes(searchQuery.toLowerCase())
@@ -212,7 +213,7 @@ const Vault = () => {
           key,
           encoded
         );
-        
+
         return {
           ciphertext: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
           iv: btoa(String.fromCharCode(...iv)),
@@ -245,7 +246,7 @@ const Vault = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.password) {
       setError('Title and password are required');
       return;
@@ -253,7 +254,7 @@ const Vault = () => {
 
     try {
       setLoading(true);
-      
+
       // Get master password from user (in real app, this would be from login)
       const masterPassword = prompt('Enter your master password to encrypt:');
       if (!masterPassword) {
@@ -272,14 +273,14 @@ const Vault = () => {
         // Create new item
         await api.post('/vault', encryptedData);
       }
-      
+
       // Reset form and refresh list
-      setFormData({ 
-        title: '', 
-        username: '', 
-        password: '', 
-        url: '', 
-        notes: '' 
+      setFormData({
+        title: '',
+        username: '',
+        password: '',
+        url: '',
+        notes: ''
       });
       await fetchVaultItems();
       setError('');
@@ -311,12 +312,12 @@ const Vault = () => {
 
   const handleCancelEdit = () => {
     setEditingItem(null);
-    setFormData({ 
-      title: '', 
-      username: '', 
-      password: '', 
-      url: '', 
-      notes: '' 
+    setFormData({
+      title: '',
+      username: '',
+      password: '',
+      url: '',
+      notes: ''
     });
     setError('');
   };
@@ -347,8 +348,8 @@ const Vault = () => {
     try {
       // Note: In production, you'd decrypt the password here
       // For demo, we'll show a message
-      alert('In production, this would decrypt and copy the password. Demo mode: Password copying simulated.',item);
-      
+      alert('In production, this would decrypt and copy the password. Demo mode: Password copying simulated.', item);
+
       // Simulate copy feedback
       const originalText = event.target.textContent;
       event.target.textContent = 'Copied!';
@@ -374,7 +375,7 @@ const Vault = () => {
         <div className="error-message">
           Please log in to access your vault.
         </div>
-        <button 
+        <button
           onClick={() => window.location.href = '/login'}
           className="login-redirect-btn"
         >
@@ -387,7 +388,7 @@ const Vault = () => {
   return (
     <div className="vault-container">
       <h1>Password Vault</h1>
-      
+
       {/* Password Generator */}
       {showPasswordGenerator && (
         <div className="password-generator-modal">
@@ -396,46 +397,46 @@ const Vault = () => {
             <div className="generator-controls">
               <div className="control-group">
                 <label>Length: {length}</label>
-                <input 
-                  type="range" 
-                  min="8" 
-                  max="32" 
-                  value={length} 
+                <input
+                  type="range"
+                  min="8"
+                  max="32"
+                  value={length}
                   onChange={(e) => setLength(parseInt(e.target.value))}
                 />
               </div>
               <div className="control-group checkboxes">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    checked={includeNumbers} 
+                  <input
+                    type="checkbox"
+                    checked={includeNumbers}
                     onChange={(e) => setIncludeNumbers(e.target.checked)}
                   />
                   Include Numbers
                 </label>
                 <label>
-                  <input 
-                    type="checkbox" 
-                    checked={includeSymbols} 
+                  <input
+                    type="checkbox"
+                    checked={includeSymbols}
                     onChange={(e) => setIncludeSymbols(e.target.checked)}
                   />
                   Include Symbols
                 </label>
                 <label>
-                  <input 
-                    type="checkbox" 
-                    checked={excludeLookAlikes} 
+                  <input
+                    type="checkbox"
+                    checked={excludeLookAlikes}
                     onChange={(e) => setExcludeLookAlikes(e.target.checked)}
                   />
                   Exclude Look-alikes
                 </label>
               </div>
             </div>
-            
+
             <button onClick={handleGeneratePassword} className="generate-btn">
               Generate Password
             </button>
-            
+
             {generatedPassword && (
               <div className="generated-password-section">
                 <div className="password-display">
@@ -452,8 +453,8 @@ const Vault = () => {
                 </div>
               </div>
             )}
-            
-            <button 
+
+            <button
               onClick={() => setShowPasswordGenerator(false)}
               className="close-generator"
             >
@@ -479,7 +480,7 @@ const Vault = () => {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="username">Username/Email</label>
             <input
@@ -491,7 +492,7 @@ const Vault = () => {
               placeholder="Enter username or email"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Password *</label>
             <div className="password-input-group">
@@ -504,7 +505,7 @@ const Vault = () => {
                 placeholder="Enter password"
                 required
               />
-              <button 
+              <button
                 type="button"
                 onClick={() => setShowPasswordGenerator(true)}
                 className="generate-password-btn"
@@ -513,7 +514,7 @@ const Vault = () => {
               </button>
             </div>
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="url">Website URL</label>
             <input
@@ -525,7 +526,7 @@ const Vault = () => {
               placeholder="https://example.com"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="notes">Notes</label>
             <textarea
@@ -537,7 +538,7 @@ const Vault = () => {
               rows="3"
             />
           </div>
-          
+
           <div className="form-actions">
             <button type="submit" disabled={loading}>
               {loading ? 'Saving...' : (editingItem ? 'Update' : 'Add')}
@@ -595,7 +596,7 @@ const Vault = () => {
                       <div className="item-field password-field">
                         <strong>Password:</strong>
                         <span className="password-mask">••••••••</span>
-                        <button 
+                        <button
                           onClick={() => handleCopyPassword(item)}
                           className="copy-btn"
                           type="button"
@@ -624,14 +625,14 @@ const Vault = () => {
                   </div>
                 </div>
                 <div className="item-actions">
-                  <button 
+                  <button
                     onClick={() => handleEdit(item)}
                     disabled={loading}
                     className="edit-btn"
                   >
                     Edit
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDelete(item._id)}
                     disabled={loading}
                     className="delete-btn"

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_BASE_URL from "@/config";
 import "./Login.css";
 
 const Login = ({ onToggleMode, onLoginSuccess }) => {
@@ -29,14 +30,13 @@ const Login = ({ onToggleMode, onLoginSuccess }) => {
     }
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password
+          password: formData.password,
         }),
       });
 
@@ -48,16 +48,16 @@ const Login = ({ onToggleMode, onLoginSuccess }) => {
 
       // Success - handle the response
       const { token, encSalt, userId, email } = data;
-      
+
       // Store authentication data
       localStorage.setItem('token', token);
       localStorage.setItem('encSalt', encSalt);
       localStorage.setItem('userId', userId);
       localStorage.setItem('email', email);
 
-      setMessage({ 
-        text: 'Login successful!', 
-        type: 'success' 
+      setMessage({
+        text: 'Login successful!',
+        type: 'success'
       });
 
       // Call success callback if provided
@@ -71,9 +71,9 @@ const Login = ({ onToggleMode, onLoginSuccess }) => {
       }, 1000);
 
     } catch (error) {
-      setMessage({ 
-        text: error.message || 'An error occurred during login', 
-        type: 'error' 
+      setMessage({
+        text: error.message || 'An error occurred during login',
+        type: 'error'
       });
     } finally {
       setLoading(false);
@@ -94,7 +94,7 @@ const Login = ({ onToggleMode, onLoginSuccess }) => {
     <div className="login-container">
       <div className="login-card">
         <h2>Login to Your Account</h2>
-        
+
         {message.text && (
           <div className={`message ${message.type}`}>
             {message.text}
@@ -131,8 +131,8 @@ const Login = ({ onToggleMode, onLoginSuccess }) => {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="login-button"
             disabled={loading}
           >
@@ -143,8 +143,8 @@ const Login = ({ onToggleMode, onLoginSuccess }) => {
         <div className="login-toggle">
           <p>
             Don't have an account?{' '}
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="toggle-button"
               onClick={handleSignUpClick}
               disabled={loading}

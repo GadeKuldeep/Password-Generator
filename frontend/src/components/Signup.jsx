@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_BASE_URL from '@/config';
 import "./Signup.css";
 
 const Signup = ({ onToggleMode, onSignupSuccess }) => {
@@ -42,11 +43,9 @@ const Signup = ({ onToggleMode, onSignupSuccess }) => {
     }
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password
@@ -61,14 +60,14 @@ const Signup = ({ onToggleMode, onSignupSuccess }) => {
 
       // Success - handle the response
       const { token, encSalt } = data;
-      
+
       // Store authentication data
       localStorage.setItem('token', token);
       localStorage.setItem('encSalt', encSalt);
 
-      setMessage({ 
-        text: 'Account created successfully!', 
-        type: 'success' 
+      setMessage({
+        text: 'Account created successfully!',
+        type: 'success'
       });
 
       // Call success callback if provided
@@ -82,9 +81,9 @@ const Signup = ({ onToggleMode, onSignupSuccess }) => {
       }, 1000);
 
     } catch (error) {
-      setMessage({ 
-        text: error.message || 'An error occurred during signup', 
-        type: 'error' 
+      setMessage({
+        text: error.message || 'An error occurred during signup',
+        type: 'error'
       });
     } finally {
       setLoading(false);
@@ -105,7 +104,7 @@ const Signup = ({ onToggleMode, onSignupSuccess }) => {
     <div className="signup-container">
       <div className="signup-card">
         <h2>Create Your Account</h2>
-        
+
         {message.text && (
           <div className={`message ${message.type}`}>
             {message.text}
@@ -157,8 +156,8 @@ const Signup = ({ onToggleMode, onSignupSuccess }) => {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="signup-button"
             disabled={loading}
           >
@@ -169,8 +168,8 @@ const Signup = ({ onToggleMode, onSignupSuccess }) => {
         <div className="signup-toggle">
           <p>
             Already have an account?{' '}
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="toggle-button"
               onClick={handleSignInClick}
               disabled={loading}
