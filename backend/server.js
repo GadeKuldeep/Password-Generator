@@ -14,11 +14,11 @@ connectDB();
 
 const app = express();
 
-// ✅ CORS Configuration
+// ✅ CORS Configuration (Netlify + localhost)
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", 
+      "http://localhost:5173",
       "https://passwordgenerato2.netlify.app"
     ],
     credentials: true,
@@ -27,15 +27,31 @@ app.use(
   })
 );
 
-
 // ✅ Middleware
 app.use(express.json({ limit: "2mb" }));
 
-// ✅ Routes
+// ✅ Logging middleware for debugging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
+// ✅ Routes with error catching
 app.use("/api", landingRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/vault", vaultRoutes);
 
-// ✅ Server Start
+// ✅ Global error handler (to catch unexpected errors)
+app.use((err, req, res, next) => {
+  console.error("🔥 Server Error:", err);
+  res.status(500).json({ message: "Internal Server Error", error: err.message });
+});
+
+// ✅ Fallback route for unknown endpoints
+app.use("*", (req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
