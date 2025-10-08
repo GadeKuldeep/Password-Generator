@@ -2,9 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Landing from "./components/LandingPage.jsx";
+import LandingPage from "./components/LandingPage.jsx";
 import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
+import Vault from "./components/Vault.jsx";
 
 // Create a theme
 const theme = createTheme({
@@ -38,9 +39,10 @@ const App = () => {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/auth/login" element={<Login />}/>
           <Route path="/auth/signup" element={<Signup />}/>
+          <Route path="/vault" element={<Vault />} />
         </Routes>
       </Router>
     </ThemeProvider>

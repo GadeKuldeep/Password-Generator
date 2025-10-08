@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "./Signup.css";
 
-export const Signup = ({ onToggleMode, onSignupSuccess }) => {
+const Signup = ({ onToggleMode, onSignupSuccess }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -78,7 +78,7 @@ export const Signup = ({ onToggleMode, onSignupSuccess }) => {
 
       // Optional: redirect after delay
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        window.location.href = '/vault';
       }, 1000);
 
     } catch (error) {
@@ -88,6 +88,16 @@ export const Signup = ({ onToggleMode, onSignupSuccess }) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSignInClick = () => {
+    // If onToggleMode prop is provided, use it (existing functionality)
+    if (onToggleMode) {
+      onToggleMode();
+    } else {
+      // Otherwise, redirect to /auth/login
+      window.location.href = '/auth/login';
     }
   };
 
@@ -162,7 +172,7 @@ export const Signup = ({ onToggleMode, onSignupSuccess }) => {
             <button 
               type="button" 
               className="toggle-button"
-              onClick={onToggleMode}
+              onClick={handleSignInClick}
               disabled={loading}
             >
               Sign In
@@ -173,3 +183,5 @@ export const Signup = ({ onToggleMode, onSignupSuccess }) => {
     </div>
   );
 };
+
+export default Signup;
