@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173, // or 3000, doesn’t matter much
     proxy: {
       '/api': {
-        target: 'https://password-generator-z5e8.onrender.com/api', // Local backend (development only)
+        target: 'https://password-generator-z5e8.onrender.com/', // Local backend (development only)
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
